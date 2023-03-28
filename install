@@ -11,15 +11,15 @@ fi
 
 STOW_FOLDERS=$STOW_FOLDERS DOTFILES=$DOTFILES #$DOTFILES/install
 
-echo "stowing folders: $STOW_FOLDERS"
 echo "dotfiles folder: $DOTFILES"
+echo "stowing folders: $STOW_FOLDERS\n"
 
 pushd $DOTIFLES
 for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
 do
     echo "stow $folder"
-    #stow -D $folder
-    stow $folder
+    stow --dir $DOTFILES -D $folder
+    stow --dir $DOTFILES $folder
 done
 popd
 
