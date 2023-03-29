@@ -1,0 +1,12 @@
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+
+[user]
+	name = Evan Conley
+    email = econmang@user.noreply.github.com
+
+[init]
+	defaultBranch = main
+
+[core]
+    editor = nvim

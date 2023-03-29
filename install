@@ -2,7 +2,7 @@
 
 # Set the folders to stow
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="alacritty,i3,nvim,zsh"
+    STOW_FOLDERS="alacritty,gitconfig,i3,nvim,zsh"
 fi
 
 if [[ -z $DOTFILES ]]; then
