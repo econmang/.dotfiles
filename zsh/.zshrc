@@ -3,6 +3,8 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Path
 export PROJDIR="$HOME"
+export PATH=/usr/java/jre1.8.0_371/bin:$PATH
+export PATH=/usr/lib/jvm/jdk-20/bin:$PATH
 
 # Set Theme
 ZSH_THEME="robbyrussell"
