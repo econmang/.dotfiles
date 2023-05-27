@@ -33,8 +33,8 @@ vim.o.updatetime = 250
 vim.wo.signcolumn = 'yes'
 
 -- Set up copilot
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<C-A>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+--vim.g.copilot_no_tab_map = true
+--vim.api.nvim_set_keymap("i", "<C-A>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 
 -- Set up tokyonight theme
 require('tokyonight').setup {

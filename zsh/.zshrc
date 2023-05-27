@@ -6,6 +6,11 @@ export PROJDIR="$HOME"
 export PATH=/usr/java/jre1.8.0_371/bin:$PATH
 export PATH=/usr/lib/jvm/jdk-20/bin:$PATH
 export PATH=/opt/gradle/gradle-8.1.1/bin:$PATH
+export PATH=/home/econmang/.buildsources/Odin:$PATH
+# pnpm
+export PNPM_HOME="/home/econmang/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
 
 # Set Theme
 ZSH_THEME="robbyrussell"
@@ -41,7 +46,4 @@ bindkey -s '^W' 'PROJDIR=$(pwd) && clear^M'
 export PATH=$PATH:/home/econmang/.spicetify
 export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 
-# pnpm
-export PNPM_HOME="/home/econmang/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
+[ -f "/home/econmang/.ghcup/env" ] && source "/home/econmang/.ghcup/env" # ghcup-env
