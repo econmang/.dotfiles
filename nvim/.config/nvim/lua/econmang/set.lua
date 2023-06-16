@@ -38,7 +38,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Set up tokyonight theme
 require('tokyonight').setup {
-  style = 'storm',
+  style = 'night',
   transparent = false,
   terminal_colors = true,
   styles = {

@@ -16,9 +16,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 require('lazy').setup({
-  -- Package manager
-  'wbthomason/packer.nvim',
-
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -61,6 +58,9 @@ require('lazy').setup({
   -- Github Copilot
   --'github/copilot.vim',
 
+  -- Set up terminal plugin
+  {'akinsho/toggleterm.nvim', version = "*", config = true},
+
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
 
@@ -70,6 +70,4 @@ require('lazy').setup({
   -- Set up file tree for exploring new projects
   { 'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons',}, tag='nightly' },
 
-  -- Set up file tree for exploring new projects
-  { 'akinsho/toggleterm.nvim', version = '*', config = function() require("toggleterm").setup() end },
 })
