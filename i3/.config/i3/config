@@ -178,7 +178,7 @@ bindsym $mod+r mode "resize"
 
 # Compositor
 # exec_always picom -f
-exec_always --no-startup-id pkill picom; ~/buildsources/picom/build/src/picom --no-use-damage
+exec_always --no-startup-id picom 
 
 # Theme
 set $bgcolor    #2E3440
