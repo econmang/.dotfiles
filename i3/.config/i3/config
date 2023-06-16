@@ -176,9 +176,6 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Compositor
-# exec_always picom -f
-#exec_always --no-startup-id picom 
 
 # Theme
 set $bgcolor    #2E3440
@@ -200,5 +197,8 @@ bar {
 # Enable external monitor
 exec_always --no-startup-id xrandr --output eDP-1 --off
 exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --mode 3440x1440
+# Compositor
+exec --no-startup-id picom --config /home/econmang/.config/picom/picom.conf
 # Wallpaper
 exec_always --no-startup-id feh --bg-fill /home/econmang/Downloads/wallhavenBG.jpg
+
