@@ -107,3 +107,6 @@ require('nvim-tree').setup({
     adaptive_size = true,
   },
 })
+
+-- [[Setup toggleterm]]
+require('toggleterm').setup({})
