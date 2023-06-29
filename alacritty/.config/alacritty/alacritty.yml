@@ -36,7 +36,7 @@ colors:
 font:
   normal:
     family: JetBrains Mono Nerd Font
-    style: Light
+    style: Medium
   bold:
     family: JetBrains Mono Nerd Font
     style: Bold
