@@ -47,3 +47,6 @@ export PATH=$PATH:/home/econmang/.spicetify
 export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 
 [ -f "/home/econmang/.ghcup/env" ] && source "/home/econmang/.ghcup/env" # ghcup-env
+
+# opam configuration
+[[ ! -r /home/econmang/.opam/opam-init/init.zsh ]] || source /home/econmang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
