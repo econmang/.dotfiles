@@ -48,6 +48,7 @@ require('lazy').setup({
 
   -- Git related plugins
   'lewis6991/gitsigns.nvim',
+  'tpope/vim-fugitive',
 
   'folke/tokyonight.nvim', -- Tokyo Night theme
   'nvim-lualine/lualine.nvim', -- Fancier statusline
