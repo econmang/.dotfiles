@@ -37,8 +37,8 @@ alias vim=nvim
 alias pn=pnpm
 
 # Key Binds
-bindkey -s '^F' 'cd $(find . -maxdepth 3 -type d | fzf) && PROJDIR=$(pwd) && clear^M'
-bindkey -s '^T' '~/.config/.local/bin/tmux-sessionizer.zsh && clear^M'
+bindkey -s '^F' 'cd $(~/.config/.local/bin/fzf-finder.zsh) && PROJDIR=$(pwd) && clear^M'
+bindkey -s '^T' '~/.config/.local/bin/tmux-sessionizer.zsh^M'
 bindkey -s '^S' '~/.config/.local/bin/tmux-sessionlister.zsh && clear^M'
 bindkey -s '^W' 'PROJDIR=$(pwd) && clear^M'
 

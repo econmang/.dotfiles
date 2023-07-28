@@ -1,15 +1,17 @@
 #!/usr/bin/zsh
 
-selected=$(find ~/Documents/projects/ -mindepth 1 -maxdepth 2 -type d | fzf)
+selected=$(find . -maxdepth 4 -type d | fzf)
 
 if [[ -z $selected ]]; then
   exit 0
 fi
+
+cd "$selected"
 
 selected_name=$(basename "$selected" | tr . _)
 
 if tmux has-session -t=$selected_name 2> /dev/null; then
   tmux a -t $selected_name
 else
-  tmux new-session -s $selected_name -c $selected
+  tmux new-session -s $selected_name -c "$(pwd)"
 fi
