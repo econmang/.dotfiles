@@ -89,8 +89,8 @@ bindsym $mod+b split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+s layout stacking
-#bindsym $mod+w layout tabbed
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -104,6 +104,9 @@ bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
+
+# launch flameshot gui
+bindsym $mod+Shift+g exec flameshot gui
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -190,15 +193,15 @@ bar {
         mode hide
         status_command i3status
 }
-# Start default programs
-#exec --no-startup-id spotify
-#exec --no-startup-id firefox
-#exec --no-startup-id alacritty 
 # Enable external monitor
 exec_always --no-startup-id xrandr --output eDP-1 --off
 exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --mode 3440x1440
 # Wallpaper
-#exec_always --no-startup-id feh --bg-fill /home/econmang/Downloads/wallhavenBG.jpg
-exec_always nitrogen --restore
+exec --no-startup-id nitrogen --restore
 # Compositor
-#exec picom --config $HOME/.config/picom/picom.conf
+#exec --no-startup-id picom --config $HOME/.config/picom/picom.conf
+
+# Start default programs
+#exec --no-startup-id spotify
+#exec --no-startup-id firefox
+#exec --no-startup-id alacritty 
