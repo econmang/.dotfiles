@@ -55,7 +55,7 @@ require('tokyonight').setup {
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme tokyonight-night]]
+vim.cmd [[colorscheme tokyonight-storm]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
