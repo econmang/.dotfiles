@@ -194,8 +194,8 @@ bar {
         status_command i3status
 }
 # Enable external monitor
-exec_always --no-startup-id xrandr --output eDP-1 --off
-exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --mode 3440x1440
+# exec_always --no-startup-id xrandr --output eDP-1 --off
+# exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --mode 3440x1440
 # Wallpaper
 exec --no-startup-id nitrogen --restore
 # Compositor
