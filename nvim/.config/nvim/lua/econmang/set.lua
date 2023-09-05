@@ -36,26 +36,46 @@ vim.wo.signcolumn = 'yes'
 vim.g.copilot_no_tab_map = true
 vim.api.nvim_set_keymap("i", "<C-A>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 
--- Set up tokyonight theme
-require('tokyonight').setup {
-  style = 'night',
-  transparent = false,
-  terminal_colors = true,
-  styles = {
-    comments = { italic = true },
-    keywords = { italic = true },
-    sidebars = 'dark',
-    floats = 'dark',
-  },
-  on_colors = function(colors)
-    colors.fg_gutter = '#a8afba'
-    colors.comment = '#a8afba'
-  end
-}
+-- Set up kanagawa theme
+require('kanagawa').setup({
+    compile = false,
+    undercurl = true,
+    commentStyle = { italic = true },
+    functionStyle = {},
+    keywordStyle = { italic = true },
+    typeStyle = {},
+    transparent = false,
+    dimInactive = false,
+    terminalColors = true,
+    colors = {
+        palette = { fujiGray = "#bec2ac" },
+        theme = {
+            wave = {},
+            lotus = {},
+            dragon = {},
+            all = {
+                ui =
+                    {
+                        bg_gutter = "none",
+                    }
+            }
+        },
+    },
+    overrides = function(colors)
+        return {
+            LineNr = { fg = colors.palette.fujiGray },
+        }
+    end,
+    theme = "wave",
+    background = {
+        dark = "wave",
+        light = "lotus",
+    }
+})
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme tokyonight-storm]]
+vim.cmd [[colorscheme kanagawa]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -76,7 +96,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 require('lualine').setup {
   options = {
     icons_enabled = false,
-    theme = 'tokyonight',
+    theme = 'kanagawa',
     component_separators = '|',
     section_separators = '',
   },

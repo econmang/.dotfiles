@@ -7,6 +7,7 @@ export PATH=/usr/java/jre1.8.0_371/bin:$PATH
 export PATH=/usr/lib/jvm/jdk-20/bin:$PATH
 export PATH=/opt/gradle/gradle-8.1.1/bin:$PATH
 export PATH=/home/econmang/.buildsources/Odin:$PATH
+export PATH=/usr/local/go/bin:$PATH
 # pnpm
 export PNPM_HOME="/home/econmang/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
@@ -50,3 +51,7 @@ export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 
 # opam configuration
 [[ ! -r /home/econmang/.opam/opam-init/init.zsh ]] || source /home/econmang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

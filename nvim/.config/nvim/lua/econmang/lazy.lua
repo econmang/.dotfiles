@@ -58,6 +58,8 @@ require('lazy').setup({
   'tpope/vim-fugitive',
 
   'folke/tokyonight.nvim', -- Tokyo Night theme
+  'rebelot/kanagawa.nvim', -- Kanagawa theme
+  'ellisonleao/gruvbox.nvim', -- Gruvbox theme
   'nvim-lualine/lualine.nvim', -- Fancier statusline
   'lukas-reineke/indent-blankline.nvim', -- Add indentation guides even on blank lines
   'numToStr/Comment.nvim', -- "gc" to comment visual regions/lines
