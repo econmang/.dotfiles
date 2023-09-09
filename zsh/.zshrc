@@ -8,6 +8,8 @@ export PATH=/usr/lib/jvm/jdk-20/bin:$PATH
 export PATH=/opt/gradle/gradle-8.1.1/bin:$PATH
 export PATH=/home/econmang/.buildsources/Odin:$PATH
 export PATH=/usr/local/go/bin:$PATH
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
 # pnpm
 export PNPM_HOME="/home/econmang/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"

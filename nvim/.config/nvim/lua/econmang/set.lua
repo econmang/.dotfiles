@@ -73,9 +73,36 @@ require('kanagawa').setup({
     }
 })
 
+require('tokyonight').setup({
+    style = "day",
+    light_style = "storm",
+    transparent = false,
+    terminal_colors = true,
+    styles = {
+        comments = { italic = true },
+        keywords = { italic = true },
+        functions = {},
+        variables = {},
+        sidebars = "dark",
+        floats = "dark",
+    },
+    sidebars = { "qf", "help" },
+    day_brightness = 0.2,
+    hide_inactive_statusline = false,
+    dim_inactive = false,
+    lualine_bold = false,
+    on_colors = function(colors)
+        colors.comment = "#a8afba"
+        colors.fg_gutter = "#a8afba"
+    end,
+    on_highlights = function()
+    end,
+
+})
+
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme kanagawa]]
+vim.cmd [[colorscheme tokyonight-night]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -96,7 +123,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 require('lualine').setup {
   options = {
     icons_enabled = false,
-    theme = 'kanagawa',
+    theme = 'tokyonight',
     component_separators = '|',
     section_separators = '',
   },
