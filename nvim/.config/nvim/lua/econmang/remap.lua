@@ -27,6 +27,9 @@ vim.keymap.set('n', '<leader>p', '"_dP')
 -- Paste and send removed text to void register
 vim.keymap.set('n', '<leader>p', '"_dP')
 
+-- Delete to void register
+vim.keymap.set('n', '<leader>d', '"_d')
+
 -- Copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>Y', '"+Y')
