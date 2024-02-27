@@ -60,7 +60,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # bun completions
-[ -s "/home/econm/.bun/_bun" ] && source "/home/econm/.bun/_bun"
+[ -s "/home/econmang/.bun/_bun" ] && source "/home/econmang/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
