@@ -41,6 +41,7 @@ alias pn=pnpm
 
 # Key Binds
 bindkey -s '^F' 'cd $(~/.config/.local/bin/fzf-finder.zsh) && PROJDIR=$(pwd) && clear^M'
+bindkey -s '^L' 'cd $(~/.config/.local/bin/fzf-lister.zsh) && PROJDIR=$(pwd) && clear^M'
 bindkey -s '^T' '~/.config/.local/bin/tmux-sessionizer.zsh^M'
 bindkey -s '^S' '~/.config/.local/bin/tmux-sessionlister.zsh && clear^M'
 bindkey -s '^W' 'PROJDIR=$(pwd) && clear^M'
