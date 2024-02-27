@@ -3,7 +3,7 @@
 
 [user]
 	name = Evan Conley
-    email = econmang@user.noreply.github.com
+	email = econmang@user.noreply.github.com
 
 [init]
 	defaultBranch = main
