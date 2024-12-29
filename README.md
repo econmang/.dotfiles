@@ -11,27 +11,27 @@
 2. Install neovim (`nvim`):
     Instructions found [here](https://github.com/neovim/neovim/blob/master/BUILD.md).
 3. Install Tools:
-    - `tmux`:
-        ```
-        apt install tmux
-        ```
-    - `stow`:
-        ```
-        apt install stow
-        ```
-    - rigrep (`rg`):
-        ```
-        sudo apt install ripgrep
-        ```
-    - `fzf`:
-        ```
-        sudo apt install 
-       ```
+- `tmux`:
+    ```
+    apt install tmux
+    ```
+- `stow`:
+    ```
+    apt install stow
+    ```
+- rigrep (`rg`):
+    ```
+    sudo apt install ripgrep
+    ```
+- `fzf`:
+    ```
+    sudo apt install 
+   ```
 4. Optional installation depending on environment:
-    - alacritty 
-    - i3
-    - picom
-    - polybar
+- alacritty 
+- i3
+- picom
+- polybar
 
 ## Pull down the repository:
 
