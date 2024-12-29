@@ -48,10 +48,9 @@ local servers = {
   gopls = {},
   pyright = {},
   rust_analyzer = {},
-  tsserver = {},
   prismals = {},
   lua_ls = {
-    Lua = {
+    Lua= {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },

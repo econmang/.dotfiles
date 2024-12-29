@@ -61,7 +61,12 @@ require('lazy').setup({
   'rebelot/kanagawa.nvim', -- Kanagawa theme
   'ellisonleao/gruvbox.nvim', -- Gruvbox theme
   'nvim-lualine/lualine.nvim', -- Fancier statusline
-  'lukas-reineke/indent-blankline.nvim', -- Add indentation guides even on blank lines
+  { 'lukas-reineke/indent-blankline.nvim',
+    main = "ibl",
+    ---@module "ibl",
+    ---@type ibl.config
+    opts = {}
+  }, -- Add indentation guides even on blank lines
   'numToStr/Comment.nvim', -- "gc" to comment visual regions/lines
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
@@ -77,7 +82,7 @@ require('lazy').setup({
   -- Fuzzy Finder Algorithm which dependencies local dependencies to be built. Only load if `make` is available
   { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = vim.fn.executable 'make' == 1 },
 
-  -- Set up file tree for exploring new projects
-  { 'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons',}, tag='nightly' },
+  -- -- Set up file tree for exploring new projects
+  { 'nvim-tree/nvim-tree.lua', dependencies = {'nvim-tree/nvim-web-devicons',} },
 
 })

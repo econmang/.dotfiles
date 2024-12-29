@@ -50,18 +50,6 @@ bindkey -s '^W' 'PROJDIR=$(pwd) && clear^M'
 export PATH=$PATH:/home/econmang/.spicetify
 export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 
-[ -f "/home/econmang/.ghcup/env" ] && source "/home/econmang/.ghcup/env" # ghcup-env
-
-# opam configuration
-[[ ! -r /home/econmang/.opam/opam-init/init.zsh ]] || source /home/econmang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# bun completions
-[ -s "/home/econmang/.bun/_bun" ] && source "/home/econmang/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
