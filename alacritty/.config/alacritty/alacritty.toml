@@ -1,0 +1,77 @@
+general.live_config_reload = true
+#theme = "Tokyonight_Storm"
+
+[colors]
+#name = "Palenight"
+#author = "JonathanSpeek"
+
+  [colors.primary]
+  background = "0x24283b"
+  foreground = "0xc0caf5"
+
+  [colors.normal]
+  black = "0x1D202F"
+  red = "0xf7768e"
+  green = "0x9ece6a"
+  yellow = "0xe0af68"
+  blue = "0x7aa2f7"
+  magenta = "0xbb9af7"
+  cyan = "0x7dcfff"
+  white = "0xa9b1d6"
+
+  [colors.bright]
+  black = "0x414868"
+  red = "0xf7768e"
+  green = "0x9ece6a"
+  yellow = "0xe0af68"
+  blue = "0x7aa2f7"
+  magenta = "0xbb9af7"
+  cyan = "0x7dcfff"
+  white = "0xc0caf5"
+
+  [[colors.indexed_colors]]
+  index = 16
+  color = "0xff9e64"
+
+  [[colors.indexed_colors]]
+  index = 17
+  color = "0xdb4b4b"
+
+[font]
+size = 11
+
+  [font.normal]
+  family = "JetBrains Mono Nerd Font"
+  style = "Regular"
+
+  [font.bold]
+  family = "JetBrains Mono Nerd Font"
+  style = "Bold"
+
+  [font.italic]
+  family = "JetBrains Mono Nerd Font"
+  style = "MediumItalic"
+
+  [font.bold_italic]
+  family = "JetBrains Mono Nerd Font"
+  style = "BoldItalic"
+
+  [font.offset]
+  x = 0
+  y = 0
+
+[window]
+opacity = 1
+decorations = "none"
+
+  [window.padding]
+  x = 8
+  y = 5
+
+[scrolling]
+history = 10_000
+multiplier = 10
+
+[selection]
+semantic_escape_chars = ",│`|:\"' ()[]{}<>"
+save_to_clipboard = true

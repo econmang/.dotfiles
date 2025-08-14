@@ -15,6 +15,7 @@
     ```
     apt install tmux
     ```
+    *Currently trying out zellij*
 - `stow`:
     ```
     apt install stow
@@ -29,9 +30,7 @@
    ```
 4. Optional installation depending on environment:
 - alacritty 
-- i3
-- picom
-- polybar
+- kitty 
 
 ## Pull down the repository:
 

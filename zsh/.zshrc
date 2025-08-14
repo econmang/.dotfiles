@@ -3,17 +3,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Path
 export PROJDIR="$HOME"
-export PATH=/usr/java/jre1.8.0_371/bin:$PATH
-export PATH=/usr/lib/jvm/jdk-20/bin:$PATH
-export PATH=/opt/gradle/gradle-8.1.1/bin:$PATH
-export PATH=/home/econmang/.buildsources/Odin:$PATH
 export PATH=/usr/local/go/bin:$PATH
-export MODULAR_HOME="$HOME/.modular"
-export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
-# pnpm
-export PNPM_HOME="/home/econmang/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
 
 # Set Theme
 ZSH_THEME="robbyrussell"
@@ -37,7 +27,6 @@ source $ZSH/oh-my-zsh.sh
 alias py=python3
 alias vi=nvim
 alias vim=nvim
-alias pn=pnpm
 
 # Key Binds
 bindkey -s '^F' 'cd $(~/.config/.local/bin/fzf-finder.zsh) && PROJDIR=$(pwd) && clear^M'
