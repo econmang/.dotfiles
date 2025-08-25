@@ -27,16 +27,15 @@ source $ZSH/oh-my-zsh.sh
 alias py=python3
 alias vi=nvim
 alias vim=nvim
+alias icat="kitten icat"
 
 # Key Binds
 bindkey -s '^F' 'cd $(~/.config/.local/bin/fzf-finder.zsh) && PROJDIR=$(pwd) && clear^M'
 bindkey -s '^L' 'cd $(~/.config/.local/bin/fzf-lister.zsh) && PROJDIR=$(pwd) && clear^M'
 bindkey -s '^T' '~/.config/.local/bin/tmux-sessionizer.zsh^M'
 bindkey -s '^S' '~/.config/.local/bin/tmux-sessionlister.zsh && clear^M'
-bindkey -s '^W' 'PROJDIR=$(pwd) && clear^M'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export PATH=$PATH:/home/econmang/.spicetify
 export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 
 export NVM_DIR="$HOME/.nvm"
