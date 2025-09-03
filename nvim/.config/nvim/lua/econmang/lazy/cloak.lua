@@ -1,3 +1,4 @@
+-- [[ Hide sensitive info ]]
 return {
 	"laytan/cloak.nvim",
 	config = function()

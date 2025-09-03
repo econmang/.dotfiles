@@ -1,3 +1,4 @@
+-- [[ Git Signs & Spacing ]]
 return {
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
