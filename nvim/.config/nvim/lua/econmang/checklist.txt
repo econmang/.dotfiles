@@ -1,0 +1,26 @@
+[ ] lazy:
+	[x] cloak.lua
+	[ ] colors.lua
+	[x] conform.lua
+	[x] dap.lua
+	[x] fugitive.lua
+	[x] golf.lua
+	[ ] init.lua
+	[x] jai.lua
+	[ ] local.lua
+	[ ] lsp.lua
+	[ ] neotest.lua
+	[x] peek.lua
+	[ ] snippets.lua
+	[x] supermaven.lua
+	[ ] telescope.lua
+	[x] tj.lua
+	[ ] treesitter.lua
+	[x] trouble.lua
+	[ ] undotree.lua
+	[x] vimbegood.lua
+	[x] zenmode.lua
+[ ] init.lua
+[x] lazy_init.lua
+[ ] remap.lua
+[x] set.lua -- settings.lua

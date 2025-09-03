@@ -1,21 +1,36 @@
--- [[ Install `lazy.nvim` Plugin Manager ]]
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system { "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath }
-	if vim.v.shell_error ~= 0 then
-		error("Error cloning lazy.nvim:\n" .. out)
-	end
-end
-
----@type vim.Option
-local rtp = vim.opt.rtp
-rtp:prepend(lazypath)
-
 -- [[ Install and Configure Plugins ]]
 require("lazy").setup({
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 
+	{
+		"nvim-treesitter/nvim-treesitter", -- syntax highlighting and AST generationl
+		branch = "master",
+		lazy = false,
+		build = ":TSUpdate"
+	},
+	{
+		"mason-org/mason.nvim", -- lsp server mgr
+		opts = {}
+	},
+	{
+		"neovim/nvim-lspconfig", -- lsp setup
+		dependencies = {
+			{
+				"folke/lazydev.nvim",
+				ft = "lua", -- only load lua files
+				opts = {
+					library = {
+						{ path = "${3rd}/luv/library", words = { "vim%.uv" } }
+					},
+				},
+			},
+		},
+		config = function()
+			local lspconfig = require("lspconfig")
+			lspconfig.lua_ls.setup {}
+			lspconfig.gopls.setup {}
+		end,
+	},
 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
 		"lewis6991/gitsigns.nvim",
 		opts = {
@@ -28,25 +43,21 @@ require("lazy").setup({
 			},
 		},
 	},
-	-- Themes
 	{
-		"rebelot/kanagawa.nvim",
+		-- Themes
+		--"rebelot/kanagawa.nvim",
 		"folke/tokyonight.nvim",
-		"catppuccin/nvim",
-		mpriority = 1000, -- Make sure to load this before all the other start plugins.
+		--"catppuccin/nvim",
+		priority = 1000, -- Make sure to load this before all the other start plugins.
 		config = function()
-			--  ---@diagnostic disable-next-line: missing-fields
-			--  require('tokyonight-night').setup {
-			-- transparent = true,
-			-- styles = {
-			--   comments = { italic = false }, -- Disable italics in comments
-			-- },
-			--  }
-
-		  -- Load the colorscheme here.
-		  -- Like many other themes, this one has different styles, and you could load
-		  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-		  vim.cmd.colorscheme 'habamax'
+			 ---@diagnostic disable-next-line: missing-fields
+			 -- require('tokyonight-night').setup {
+			 -- transparent = true,
+			 -- styles = {
+			 -- 	  comments = { italic = false }, -- Disable italics in comments
+			 -- 	},
+			 -- 	 }
+			 -- 	vim.cmd.colorscheme 'tokyonight-night'
 		end,
 	},
 	{
@@ -193,5 +204,5 @@ require("lazy").setup({
 				end,
 			})
 		end,
-	}
+	},
 })

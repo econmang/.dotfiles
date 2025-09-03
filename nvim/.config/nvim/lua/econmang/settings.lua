@@ -29,10 +29,14 @@ end)
 
 -- Spacing/Wrap
 vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
+vim.opt.smartindent = true
 vim.opt.breakindent = true
+vim.opt.wrap = false
 
 -- Search
+vim.opt.incsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
@@ -45,6 +49,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 
 -- Highlight when yanking (copying) text
+vim.opt.hlsearch = false
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('nvim-highlight-yank', { clear = true }),
@@ -53,5 +58,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- If you don't have any colorschemes installed default:
---vim.cmd.colorscheme 'habamax'
+-- Colors
+vim.opt.termguicolors = true
