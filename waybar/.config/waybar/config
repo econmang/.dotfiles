@@ -5,7 +5,6 @@
   "spacing" : 0,
   "modules-left": [
   "hyprland/workspaces",
-  "custom/uptime",
   "cpu"
   ],
 
@@ -53,7 +52,7 @@
   },
 
   "clock": {
-    "timezone": "Asia/Kolkata",
+    "timezone": "America/Los_Angeles",
     "tooltip": false,
     "format": "{:%H:%M:%S  -  %A, %d}",
     "interval": 1
@@ -82,14 +81,6 @@
     "tooltip-format": "Memory"
   },
 
-  "custom/uptime": {
-    "format": "{}",
-    "format-icon": [""], 
-    "tooltip": false,
-    "interval": 1600,
-    "exec": "$HOME/.config/waybar/scripts/uptime.sh"
-  },
-  
   "backlight": {
         "format": "{icon}  {percent}%",
         "format-icons": ["","󰃜", "󰃛", "󰃞","󰃝","󰃟","󰃠"],
@@ -108,7 +99,6 @@
   "battery": {
         "interval":2,
         "states": {
-            // "good": 95,
             "warning": 30,
             "critical": 15
         },
@@ -117,8 +107,6 @@
         "format-charging": " {capacity}%",
         "format-plugged": " {capacity}%",
         "format-alt": "{icon} {time}",
-        // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
         "format-icons": ["", "", "", "", ""]
   },
   

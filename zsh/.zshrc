@@ -27,6 +27,7 @@ source $ZSH/oh-my-zsh.sh
 alias py=python3
 alias vi=nvim
 alias vim=nvim
+alias nivm=nvim
 alias icat="kitten icat"
 
 # Key Binds
@@ -41,3 +42,5 @@ export LS_COLORS=$LS_COLORS:'ow=1;100;34'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f "/home/econmang/.ghcup/env" ] && . "/home/econmang/.ghcup/env" # ghcup-env
