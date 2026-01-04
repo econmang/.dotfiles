@@ -5,7 +5,8 @@ return {
 		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter.configs").setup({
+			require("nvim-treesitter.config").setup({
+				install_dir = "~/.local/share/nvim/lazy/nvim-treesitter/",
 				ensure_installed = { "bash", "c", "diff", "go", "html", "javascript", "lua", "luadoc", "markdown", "typescript" },
 				auto_install = true,
 				sync_install = false,
@@ -14,7 +15,6 @@ return {
 				highlight = {
 					enable = true
 				},
-
 				indent = {
 					enabled = true
 				},

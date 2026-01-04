@@ -26,5 +26,13 @@ return {
 		config = function()
 			--ColorMyPencils("kanagawa")
 		end
+	},
+	{
+		"catppuccin/nvim",
+		lazy = false,
+		opts = {},
+		config = function()
+			--ColorMyPencils("kanagawa")
+		end
 	}
 }
