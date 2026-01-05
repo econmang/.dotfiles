@@ -1,0 +1,50 @@
+window {
+margin: 0px;
+border: 2px solid #88c0d0;
+background-color: #2e3440;
+}
+
+* {
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+}
+
+listview {
+	icon-size: 24px;
+    background-color: rgba(30, 30, 30, 0.9);  /* Dark background */
+    border-radius: 5px;  /* Rounded corners */
+}
+
+#input {
+margin: 5px;
+border: none;
+color: #d8dee9;
+background-color: #3b4252;
+}
+
+#inner-box {
+margin: 5px;
+border: none;
+background-color: #2e3440;
+}
+
+#outer-box {
+margin: 5px;
+border: none;
+background-color: #2e3440;
+}
+
+#scroll {
+margin: 0px;
+border: none;
+}
+
+#text {
+margin: 5px;
+border: none;
+color: #d8dee9;
+}
+
+#entry:selected {
+background-color: #3b4252;
+}
