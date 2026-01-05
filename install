@@ -2,7 +2,7 @@
 
 # Set the folders to stow
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="bin,ghostty,gitconfig,hypr,nvim,waybar,wofi,zsh"
+    STOW_FOLDERS="bin,ghostty,gitconfig,hypr,mpd,nvim,waybar,wofi,zsh"
 fi
 
 if [[ -z $DOTFILES ]]; then

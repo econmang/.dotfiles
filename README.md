@@ -29,7 +29,7 @@
     sudo apt install 
    ```
 4. Optional installation depending on environment:
-- alacritty 
+- ghostty
 - kitty 
 
 ## Pull down the repository:
