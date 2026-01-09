@@ -126,7 +126,16 @@ return {
 					Snacks.debug.backtrace()
 				end
 				vim.print = _G.dd -- Override print to use snacks for `:=` command
-
+				-- Default on for treesitter
+				local ts = Snacks.toggle.treesitter()
+				vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+					callback = function(args)
+						local ft = vim.bo[args.buf].filetype
+						if pcall(vim.treesitter.language.get_lang, ft) then
+							ts:set(true)
+						end
+					end,
+				})
 				-- Create some toggle mappings
 				Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
 				Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
@@ -139,6 +148,7 @@ return {
 				Snacks.toggle.inlay_hints():map("<leader>uh")
 				Snacks.toggle.indent():map("<leader>ug")
 				Snacks.toggle.dim():map("<leader>uD")
+				Snacks.toggle.treesitter()
 			end,
 		})
 	end,

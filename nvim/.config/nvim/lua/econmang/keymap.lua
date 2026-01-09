@@ -10,3 +10,11 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus down' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus up' })
 -- Rename
 vim.keymap.set('n', 'grn', vim.lsp.buf.rename, { desc = '[R]e[n]ame' })
+-- Code Action
+local autocmd = vim.api.nvim_create_autocmd
+autocmd("LspAttach", {
+	callback = function(e)
+		local opts = { buffer = e.buf }
+		vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+	end
+})

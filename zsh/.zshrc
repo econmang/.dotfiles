@@ -4,7 +4,6 @@ export ZSH="$HOME/.oh-my-zsh"
 # Path
 export PROJDIR="$HOME"
 export PATH=/usr/local/go/bin:$PATH
-export PATH=~/.bun/bin/bun:$PATH
 
 # Set Theme
 ZSH_THEME="robbyrussell"
@@ -22,8 +21,6 @@ source $ZSH/oh-my-zsh.sh
    export EDITOR='nvim'
  fi
 
-# Compilation flags
-
 # Aliases
 alias py=python3
 alias vi=nvim
@@ -34,8 +31,6 @@ alias icat="kitten icat"
 # Key Binds
 bindkey -s '^F' 'cd $(~/.config/.local/bin/fzf-finder.zsh) && PROJDIR=$(pwd) && clear^M'
 bindkey -s '^L' 'cd $(~/.config/.local/bin/fzf-lister.zsh) && PROJDIR=$(pwd) && clear^M'
-# bindkey -s '^T' '~/.config/.local/bin/tmux-sessionizer.zsh^M'
-# bindkey -s '^S' '~/.config/.local/bin/tmux-sessionlister.zsh && clear^M'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export LS_COLORS=$LS_COLORS:'ow=1;100;34'
