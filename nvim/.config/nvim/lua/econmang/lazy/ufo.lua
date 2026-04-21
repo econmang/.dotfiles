@@ -13,7 +13,9 @@ return {
 				pauseFoldsOnSearch = true,
 				foldtext = {
 					enabled = true,
-					padding = 3,
+					padding = {
+						width = 3,
+					},
 					lineCount = {
 						template = "%d lines",
 						hlgroup = "Comment",
