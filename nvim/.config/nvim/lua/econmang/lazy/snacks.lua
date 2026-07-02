@@ -131,6 +131,18 @@ return {
 				vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 					callback = function(args)
 						local ft = vim.bo[args.buf].filetype
+
+						if ft == nil or ft == "" then
+							ts:set(false)
+							return
+						end
+
+						local ignored_fts = { text = true, log = true, embedded_template = true, env = true }
+						if ignored_fts[ft] then
+							ts:set(false)
+							return
+						end
+
 						if pcall(vim.treesitter.language.get_lang, ft) then
 							ts:set(true)
 						end

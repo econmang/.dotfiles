@@ -4,6 +4,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # Path
 export PROJDIR="$HOME"
 export PATH=/usr/local/go/bin:$PATH
+export PATH=~/.dotnet:$PATH
 
 # Set Theme
 ZSH_THEME="robbyrussell"
@@ -47,3 +48,9 @@ export NVM_DIR="$HOME/.nvm"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# >>> Codex installer >>>
+export PATH="/home/econmang/.local/bin:$PATH"
+# <<< Codex installer <<<
+
+export PATH=$PATH:/home/econmang/.spicetify

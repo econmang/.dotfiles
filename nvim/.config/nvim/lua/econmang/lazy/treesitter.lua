@@ -13,10 +13,12 @@ return {
 				ignore_install = {},
 				modules = {},
 				highlight = {
-					enable = true
+					enable = true,
+					disable = { "text", "log", "embedded_template" }
 				},
 				indent = {
-					enabled = true
+					enable = true,
+					disable = { "text", "log", "embedded_template" }
 				},
 			})
 		end
