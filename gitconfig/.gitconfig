@@ -12,3 +12,6 @@
 	excludesfile = ~/.config/git/ignore
 [fetch]
 	prune = true
+[user]
+	name = Evan Conley
+	email = econmang@user.noreply.github.com
