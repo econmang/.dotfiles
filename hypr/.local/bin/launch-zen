@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for command_name in zen-browser zen; do
+  if command -v "$command_name" >/dev/null 2>&1; then
+    exec "$command_name" "$@"
+  fi
+done
+
+notify-send -u critical "Zen Browser not found" \
+  "Expected either the 'zen-browser' or 'zen' executable."
+exit 127

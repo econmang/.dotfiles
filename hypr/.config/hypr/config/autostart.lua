@@ -1,0 +1,5 @@
+hl.on("hyprland.start", function()
+  hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+  hl.exec_cmd("pgrep -x noctalia >/dev/null || noctalia")
+  hl.exec_cmd("sleep 2; " .. MONITOR_RECONCILE)
+end)

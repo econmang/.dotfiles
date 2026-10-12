@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+"""Reconcile Hyprland monitors for laptop, ultrawide, and gaming display use.
+
+Behavior:
+- Selects each output's highest-refresh mode at its largest resolution.
+- Treats a 3440x1440-class output as the primary ultrawide.
+- Places 1920x1080-class external displays to its right.
+- Disables eDP-* when the lid is closed and an external output is connected.
+- Restores the laptop panel when undocked or the lid is open.
+"""
+
+from __future__ import annotations
+
+import glob
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+from dataclasses import dataclass
+from typing import Any
+
+
+MODE_RE = re.compile(
+    r"(?P<w>\d+)x(?P<h>\d+)@(?P<hz>[0-9.]+)(?:Hz)?",
+    re.IGNORECASE,
+)
+
+
+@dataclass
+class Output:
+    name: str
+    description: str
+    internal: bool
+    modes: list[str]
+    best_mode: str
+    width: int
+    height: int
+    refresh: float
+
+
+def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        args,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=check,
+    )
+
+
+def notify(summary: str, body: str, urgency: str = "normal") -> None:
+    try:
+        subprocess.Popen(["notify-send", "-u", urgency, summary, body])
+    except FileNotFoundError:
+        pass
+
+
+def lid_is_closed() -> bool:
+    candidates = glob.glob("/proc/acpi/button/lid/*/state")
+    for path in candidates:
+        try:
+            if "closed" in open(path, encoding="utf-8").read().lower():
+                return True
+        except OSError:
+            continue
+
+    # Some systems expose lid state through systemd-logind instead of ACPI.
+    try:
+        result = run(
+            "busctl",
+            "get-property",
+            "org.freedesktop.login1",
+            "/org/freedesktop/login1",
+            "org.freedesktop.login1.Manager",
+            "LidClosed",
+            check=False,
+        )
+        if result.returncode == 0:
+            value = result.stdout.strip().split()[-1].lower()
+            if value in {"true", "false"}:
+                return value == "true"
+    except (FileNotFoundError, IndexError):
+        pass
+
+    # Unknown is intentionally treated as open so the internal panel is not
+    # disabled unexpectedly.
+    return False
+
+
+def mode_details(mode: str) -> tuple[int, int, float] | None:
+    match = MODE_RE.search(mode)
+    if not match:
+        return None
+    return int(match["w"]), int(match["h"]), float(match["hz"])
+
+
+def choose_best_mode(modes: list[str], fallback: dict[str, Any]) -> tuple[str, int, int, float]:
+    parsed: list[tuple[int, int, float, str]] = []
+    for mode in modes:
+        details = mode_details(mode)
+        if details:
+            width, height, refresh = details
+            parsed.append((width, height, refresh, mode))
+
+    if parsed:
+        # Native/largest resolution first, then highest refresh at that resolution.
+        width, height, refresh, raw = max(
+            parsed,
+            key=lambda item: (item[0] * item[1], item[0], item[1], item[2]),
+        )
+        canonical = f"{width}x{height}@{refresh:g}"
+        return canonical, width, height, refresh
+
+    width = int(fallback.get("width", 1920) or 1920)
+    height = int(fallback.get("height", 1080) or 1080)
+    refresh = float(fallback.get("refreshRate", 60.0) or 60.0)
+    return "preferred", width, height, refresh
+
+
+def read_outputs() -> list[Output]:
+    result = run("hyprctl", "monitors", "all", "-j")
+    raw = json.loads(result.stdout)
+    outputs: list[Output] = []
+
+    for item in raw:
+        name = str(item.get("name", ""))
+        if not name:
+            continue
+        modes = [str(value) for value in item.get("availableModes", [])]
+        best_mode, width, height, refresh = choose_best_mode(modes, item)
+        outputs.append(
+            Output(
+                name=name,
+                description=str(item.get("description", name)),
+                internal=name.startswith(("eDP-", "LVDS-", "DSI-")),
+                modes=modes,
+                best_mode=best_mode,
+                width=width,
+                height=height,
+                refresh=refresh,
+            )
+        )
+
+    return outputs
+
+
+def keyword_monitor(spec: str) -> None:
+    result = run("hyprctl", "keyword", "monitor", spec, check=False)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or spec)
+    time.sleep(0.12)
+
+
+def external_priority(output: Output) -> tuple[int, int, int, float, str]:
+    ultrawide = output.width >= 3000 and output.height >= 1200
+    # Ultrawide first; then larger displays; then higher refresh.
+    return (
+        0 if ultrawide else 1,
+        -(output.width * output.height),
+        -output.width,
+        -output.refresh,
+        output.name,
+    )
+
+
+def main() -> int:
+    try:
+        outputs = read_outputs()
+    except (subprocess.CalledProcessError, json.JSONDecodeError, FileNotFoundError) as exc:
+        notify("Monitor reconciliation failed", str(exc), "critical")
+        return 1
+
+    if not outputs:
+        notify("Monitor reconciliation", "Hyprland reported no connected outputs.", "critical")
+        return 1
+
+    internals = sorted((o for o in outputs if o.internal), key=lambda o: o.name)
+    externals = sorted((o for o in outputs if not o.internal), key=external_priority)
+    closed = lid_is_closed()
+
+    enabled: list[str] = []
+    disabled: list[str] = []
+
+    try:
+        if externals:
+            x = 0
+            for output in externals:
+                keyword_monitor(f"{output.name},{output.best_mode},{x}x0,1")
+                enabled.append(f"{output.name} {output.best_mode}")
+                x += output.width
+
+            if internals and closed:
+                for output in internals:
+                    keyword_monitor(f"{output.name},disable")
+                    disabled.append(output.name)
+            else:
+                # Laptop panel sits to the left while open.
+                left_x = 0
+                for output in reversed(internals):
+                    left_x -= output.width
+                    keyword_monitor(f"{output.name},{output.best_mode},{left_x}x0,1")
+                    enabled.append(f"{output.name} {output.best_mode}")
+
+            # Hyprland has no conventional primary flag; focus the first output,
+            # chosen to be the ultrawide when one is present.
+            run("hyprctl", "dispatch", "focusmonitor", externals[0].name, check=False)
+        else:
+            # Undocked: restore the internal panel at the origin.
+            for index, output in enumerate(internals):
+                position = "0x0" if index == 0 else "auto-right"
+                keyword_monitor(f"{output.name},{output.best_mode},{position},1")
+                enabled.append(f"{output.name} {output.best_mode}")
+            if internals:
+                run("hyprctl", "dispatch", "focusmonitor", internals[0].name, check=False)
+
+    except RuntimeError as exc:
+        notify("Monitor reconciliation failed", str(exc), "critical")
+        return 1
+
+    body_lines = ["Enabled: " + (", ".join(enabled) if enabled else "none")]
+    if disabled:
+        body_lines.append("Disabled: " + ", ".join(disabled))
+    body_lines.append("Lid: " + ("closed" if closed else "open/unknown"))
+    notify("Monitor layout refreshed", "\n".join(body_lines))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
