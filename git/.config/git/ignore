@@ -1,0 +1,4 @@
+# Local AI/editor settings and operating-system clutter
+**/.claude/settings.local.json
+.DS_Store
+Thumbs.db

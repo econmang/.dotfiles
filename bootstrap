@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+# Reproducible Linux dotfiles bootstrap. It is deliberately safe to re-run.
+set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TARGET_DIR="${HOME:?HOME must be set}"
+# A newly bootstrapped shell has not necessarily sourced the managed zsh/fish
+# configuration yet. Make freshly installed user-local language tools visible
+# to this run and to `./bootstrap --check`.
+export PATH="$TARGET_DIR/.local/bin:$TARGET_DIR/.dotnet:$TARGET_DIR/.dotnet/tools:$TARGET_DIR/go/bin:$PATH"
+PROFILE="core"; DRY_RUN=false; STOW_ONLY=false; CHECK_ONLY=false; SETUP_DOOM=false; REPLACE_CONFLICTS=false
+CORE_STOW=(bin btop doom fish gh git gitconfig lazygit nvim ghostty zsh)
+DESKTOP_STOW=(hypr mpd waybar wofi)
+
+usage() { cat <<'EOF'
+Usage: ./bootstrap [--profile core|desktop] [--dry-run] [--stow-only] [--setup-doom] [--replace-conflicts] [--check]
+
+The bootstrap installs portable core and cross-language development prerequisites
+using dnf, apt, pacman, or zypper, then links the selected Stow profile. It also
+installs user-local language servers. --setup-doom additionally installs Doom
+Emacs after the configuration is linked. It never changes a login shell or
+overwrites files unless --replace-conflicts is explicitly supplied; that option
+moves conflicting files to ~/.dotfiles-backups/ before linking repository files.
+EOF
+}
+log() { printf '%s\n' "==> $*"; }
+warn() { printf '%s\n' "warning: $*" >&2; }
+die() { printf '%s\n' "error: $*" >&2; exit 1; }
+run() { if "$DRY_RUN"; then printf '+ '; printf '%q ' "$@"; printf '\n'; else "$@"; fi; }
+
+# Package-manager calls elevate individually. Running the whole bootstrap as
+# root would otherwise link configuration into /root instead of the user home.
+(( EUID != 0 )) || die "do not run bootstrap with sudo; it elevates only package installation when needed"
+
+while (($#)); do
+  case "$1" in
+    --profile) PROFILE="${2:-}"; shift 2 ;;
+    --dry-run) DRY_RUN=true; shift ;;
+    --stow-only) STOW_ONLY=true; shift ;;
+    --setup-doom) SETUP_DOOM=true; shift ;;
+    --replace-conflicts) REPLACE_CONFLICTS=true; shift ;;
+    --check) CHECK_ONLY=true; shift ;;
+    --help|-h) usage; exit 0 ;;
+    *) die "unknown option: $1" ;;
+  esac
+done
+case "$PROFILE" in
+  core) PACKAGES=("${CORE_STOW[@]}") ;;
+  desktop) PACKAGES=("${CORE_STOW[@]}" "${DESKTOP_STOW[@]}") ;;
+  *) die "unknown profile '$PROFILE' (expected core or desktop)" ;;
+esac
+
+manager=""
+for candidate in dnf apt-get pacman zypper; do
+  if command -v "$candidate" >/dev/null 2>&1; then manager="$candidate"; break; fi
+done
+package_list() {
+  case "$manager" in
+    dnf) printf '%s\n' zsh fish stow git gh neovim emacs-pgtk ghostty graphviz cmake sqlite ShellCheck fzf ripgrep fd-find bat eza zoxide direnv jq yq btop lazygit tmux curl wget unzip make gcc gcc-c++ pkgconf-pkg-config wl-clipboard ;;
+    apt-get) printf '%s\n' zsh fish stow git gh neovim emacs graphviz cmake sqlite3 shellcheck fzf ripgrep fd-find bat zoxide direnv jq yq btop lazygit tmux curl wget unzip build-essential pkg-config xclip wl-clipboard ;;
+    pacman) printf '%s\n' zsh fish stow git github-cli neovim emacs ghostty graphviz cmake sqlite shellcheck fzf ripgrep fd bat eza zoxide direnv jq yq btop lazygit tmux curl wget unzip base-devel pkgconf wl-clipboard ;;
+    zypper) printf '%s\n' zsh fish stow git gh neovim emacs graphviz cmake sqlite3 ShellCheck ghostty fzf ripgrep fd bat eza zoxide direnv jq yq btop lazygit tmux curl wget unzip make gcc-c++ pkg-config wl-clipboard ;;
+  esac
+}
+language_package_list() {
+  # Keep these separate from the core list. Package names legitimately vary
+  # between distributions, so unavailable development packages are reported
+  # and skipped instead of aborting an otherwise usable bootstrap.
+  case "$manager" in
+    dnf) printf '%s\n' python3 python3-pip golang nodejs clang-tools-extra rust cargo rust-analyzer gopls java-latest-openjdk-devel jdtls dotnet-sdk-10.0 ;;
+    apt-get) printf '%s\n' python3 python3-pip golang-go nodejs npm clangd rustc cargo rust-analyzer gopls default-jdk jdtls ;;
+    pacman) printf '%s\n' python python-pip go nodejs npm clang rust rust-analyzer gopls jdk-openjdk jdtls ;;
+    zypper) printf '%s\n' python3 python3-pip go nodejs npm clang-tools rust cargo rust-analyzer gopls java-21-openjdk-devel jdtls ;;
+  esac
+}
+install_development_packages() {
+  local package
+  # Development package names vary more than core package names. Install each
+  # candidate transactionally so one unavailable package (e.g. jdtls) does not
+  # prevent the rest of the toolchain from being installed. Do not preflight
+  # with per-package metadata queries: those are slow and unreliable on a
+  # freshly configured dnf installation.
+  for package in "$@"; do
+    log "installing development package: $package"
+    case "$manager" in
+      dnf) if ! run sudo dnf install -y "$package"; then warn "development package unavailable for $manager: $package (skipping)"; fi ;;
+      apt-get) if ! run sudo apt-get install -y "$package"; then warn "development package unavailable for $manager: $package (skipping)"; fi ;;
+      pacman) if ! run sudo pacman -S --needed --noconfirm "$package"; then warn "development package unavailable for $manager: $package (skipping)"; fi ;;
+      zypper) if ! run sudo zypper --non-interactive install --no-recommends "$package"; then warn "development package unavailable for $manager: $package (skipping)"; fi ;;
+    esac
+  done
+}
+setup_doom() {
+  local doom_dir="$TARGET_DIR/.config/emacs"
+  local emacs_bin
+  if [[ -e "$doom_dir" && ! -x "$doom_dir/bin/doom" ]]; then
+    die "$doom_dir exists but is not a Doom Emacs checkout; move it aside before using --setup-doom"
+  fi
+  if [[ ! -e "$doom_dir" ]]; then
+    log "cloning Doom Emacs"
+    run git clone --depth 1 https://github.com/doomemacs/core "$doom_dir"
+  fi
+  emacs_bin="${EMACS:-$(command -v emacs || true)}"
+  # Fedora's GUI split package can be installed while its alternatives link is
+  # stale; its PGTK executable remains a valid Doom host.
+  if [[ -z "$emacs_bin" && -x /usr/bin/emacs-pgtk ]]; then emacs_bin=/usr/bin/emacs-pgtk; fi
+  [[ -n "$emacs_bin" ]] || die "Emacs is not available; install it before using --setup-doom"
+  log "synchronizing Doom Emacs"
+  run env EMACS="$emacs_bin" "$doom_dir/bin/doom" install
+  run env EMACS="$emacs_bin" "$doom_dir/bin/doom" sync --env
+  run env EMACS="$emacs_bin" "$doom_dir/bin/doom" doctor
+}
+install_packages() {
+  [[ -n "$manager" ]] || die "no supported package manager found (dnf, apt, pacman, or zypper)"
+  # apt's cache must exist before checking package availability.
+  [[ "$manager" != apt-get ]] || run sudo apt-get update
+  local -a requested development
+  mapfile -t requested < <(package_list)
+  mapfile -t development < <(language_package_list)
+  # Core names are deliberately selected per distro and should be installed as
+  # one solver transaction. This is much faster than probing each package.
+  log "installing ${#requested[@]} core packages using $manager"
+  case "$manager" in
+    dnf) run sudo dnf install -y "${requested[@]}" ;;
+    apt-get) run sudo apt-get install -y "${requested[@]}" ;;
+    pacman) run sudo pacman -S --needed --noconfirm "${requested[@]}" ;;
+    zypper) run sudo zypper --non-interactive install --no-recommends "${requested[@]}" ;;
+  esac
+  install_development_packages "${development[@]}"
+}
+setup_language_servers() {
+  local installer="$REPO_DIR/scripts/install-language-servers"
+  [[ -x "$installer" ]] || die "missing executable language-server installer: $installer"
+  log "installing user-local language servers"
+  run "$installer"
+}
+preflight_stow() {
+  command -v stow >/dev/null 2>&1 || die "stow is required; rerun without --stow-only or install it first"
+  local failures=0 package
+  for package in "${PACKAGES[@]}"; do
+    [[ -d "$REPO_DIR/$package" ]] || die "missing Stow package: $package"
+    if ! stow --no-folding --simulate --verbose=1 --dir "$REPO_DIR" --target "$TARGET_DIR" "$package" >/dev/null 2>&1; then
+      warn "Stow conflict for '$package'"
+      stow --no-folding --simulate --verbose=1 --dir "$REPO_DIR" --target "$TARGET_DIR" "$package" || true
+      failures=1
+    fi
+  done
+  (( failures == 0 )) || die "no links were changed; resolve the conflicts above and retry"
+}
+replace_conflicts() {
+  local timestamp backup_root package source relative target backup source_real target_real
+  timestamp="$(date +%Y%m%d-%H%M%S)"
+  backup_root="$TARGET_DIR/.dotfiles-backups/$timestamp"
+  for package in "${PACKAGES[@]}"; do
+    while IFS= read -r -d '' source; do
+      relative="${source#"$REPO_DIR/$package/"}"
+      target="$TARGET_DIR/$relative"
+      [[ -e "$target" || -L "$target" ]] || continue
+      source_real="$(readlink -f "$source")"
+      target_real="$(readlink -f "$target" 2>/dev/null || true)"
+      [[ "$source_real" == "$target_real" ]] && continue
+      # A directory where this package expects a file could contain unrelated
+      # data. Do not move an entire directory as an incidental replacement.
+      [[ ! -d "$target" || -L "$target" ]] || die "cannot replace directory target: $target (move it manually first)"
+      backup="$backup_root/$relative"
+      log "backing up conflicting target: $target"
+      run mkdir -p "$(dirname "$backup")"
+      run mv -- "$target" "$backup"
+    done < <(find "$REPO_DIR/$package" \( -type f -o -type l \) -print0)
+  done
+  if [[ -d "$backup_root" || "$DRY_RUN" == true ]]; then
+    log "conflicting files backed up under $backup_root"
+  fi
+}
+apply_stow() {
+  if "$REPLACE_CONFLICTS"; then replace_conflicts; fi
+  preflight_stow
+  local package
+  for package in "${PACKAGES[@]}"; do log "stowing $package"; run stow --no-folding --restow --dir "$REPO_DIR" --target "$TARGET_DIR" "$package"; done
+}
+check_profile() {
+  local package missing=0
+  for package in "${PACKAGES[@]}"; do
+    if ! stow --no-folding --simulate --verbose=1 --dir "$REPO_DIR" --target "$TARGET_DIR" "$package" >/dev/null 2>&1; then warn "'$package' is not cleanly stowed"; missing=1; fi
+  done
+  for command_name in git nvim zsh fish fzf rg btop lazygit tmux dot; do
+    if ! command -v "$command_name" >/dev/null 2>&1; then warn "missing command: $command_name"; missing=1; fi
+  done
+  if ! command -v emacs >/dev/null 2>&1 && [[ ! -x /usr/bin/emacs-pgtk ]]; then warn "missing command: emacs"; missing=1; fi
+  if ! command -v fd >/dev/null 2>&1 && ! command -v fdfind >/dev/null 2>&1; then warn "missing command: fd (or fdfind)"; missing=1; fi
+  for command_name in python3 go node npm clangd rustc cargo rust-analyzer java; do
+    if ! command -v "$command_name" >/dev/null 2>&1; then warn "missing development command: $command_name"; missing=1; fi
+  done
+  for command_name in gopls pyright-langserver typescript-language-server csharp-ls jdtls; do
+    if ! command -v "$command_name" >/dev/null 2>&1; then warn "missing language server: $command_name"; missing=1; fi
+  done
+  if ! command -v dotnet >/dev/null 2>&1 && [[ ! -x "$TARGET_DIR/.dotnet/dotnet" ]]; then warn "missing development command: dotnet"; missing=1; fi
+  command -v zellij >/dev/null 2>&1 || warn "optional command missing: zellij"
+  (( missing == 0 )) || exit 1
+  log "profile '$PROFILE' is healthy"
+}
+if "$CHECK_ONLY"; then check_profile; exit 0; fi
+if ! "$STOW_ONLY"; then install_packages; fi
+apply_stow
+if ! "$STOW_ONLY"; then setup_language_servers; fi
+if "$SETUP_DOOM"; then setup_doom; fi
+log "installed '$PROFILE' profile; run ./bootstrap --check to validate it"

@@ -1,0 +1,3 @@
+# Deliberately minimal: inherit Git editor and defaults from the environment.
+gui:
+  showIcons: true

@@ -1,0 +1,3 @@
+;;; local.el -*- lexical-binding: t; -*-
+;; This file is intentionally untracked. Point Org-roam at a local Git checkout.
+(setq my/knowledge-directory (expand-file-name "path/to/knowledge/" (getenv "HOME")))

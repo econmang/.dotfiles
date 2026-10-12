@@ -1,25 +1,4 @@
-#!/usr/bin/env zsh
-
-# Set the folders to stow
-if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="bin,ghostty,gitconfig,hypr,mpd,nvim,waybar,wofi,zsh"
-fi
-
-if [[ -z $DOTFILES ]]; then
-    DOTFILES=$HOME/.dotfiles
-fi
-
-STOW_FOLDERS=$STOW_FOLDERS DOTFILES=$DOTFILES #$DOTFILES/install
-
-echo "dotfiles folder: $DOTFILES"
-echo "stowing folders: $STOW_FOLDERS\n"
-
-pushd $DOTIFLES
-for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
-do
-    echo "stow $folder"
-    stow --dir $DOTFILES -D $folder
-    stow --dir $DOTFILES $folder
-done
-popd
-
+#!/usr/bin/env bash
+# Backwards-compatible entry point for the portable bootstrap.
+set -euo pipefail
+exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/bootstrap" "$@"

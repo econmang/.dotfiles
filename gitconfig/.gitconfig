@@ -1,12 +1,14 @@
 [credential "https://github.com"]
-	helper = !/usr/bin/gh auth git-credential
+	helper = !gh auth git-credential
 
-[user]
-	name = Evan Conley
-	email = econmang@user.noreply.github.com
+[include]
+	path = ~/.config/git/user.local
 
 [init]
 	defaultBranch = main
 
 [core]
-    editor = nvim
+	editor = nvim
+	excludesfile = ~/.config/git/ignore
+[fetch]
+	prune = true

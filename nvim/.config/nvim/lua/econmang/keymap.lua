@@ -1,4 +1,29 @@
 -- [[ Keymaps ]]
+-- Background transparency
+local transparent_groups = {
+	'Normal',
+	'NormalNC',
+	'NormalFloat',
+	'SignColumn',
+	'LineNr',
+	'FoldColumn',
+	'EndOfBuffer',
+}
+
+local function toggle_transparent_background()
+	vim.g.transparent_background = not vim.g.transparent_background
+
+	if vim.g.transparent_background then
+		for _, group in ipairs(transparent_groups) do
+			vim.cmd.highlight({ group, 'guibg=none', 'ctermbg=none' })
+		end
+	else
+		vim.cmd.colorscheme(vim.g.colors_name)
+	end
+end
+
+vim.keymap.set('n', '<leader>bg', toggle_transparent_background, { desc = 'Toggle transparent [B]ack[G]round' })
+
 -- Diagnostics
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 -- Terminal

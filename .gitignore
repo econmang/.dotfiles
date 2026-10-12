@@ -1,0 +1,11 @@
+# Generated application state
+nvim/.config/nvim/nvim.log
+mpd/.config/mpd/mpd.db
+mpd/.config/mpd/mpd.log
+mpd/.config/mpd/mpd.pid
+mpd/.config/mpd/mpd.state
+mpd/.config/mpd/sticker.sql
+
+# Machine-specific identity and credentials
+git/.config/git/user.local
+gh/.config/gh/hosts.yml

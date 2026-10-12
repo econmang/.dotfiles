@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Install language servers that are best maintained in user space. The bootstrap
+# installs the native runtimes/toolchains before this script runs.
+set -euo pipefail
+
+log() { printf '%s\n' "==> $*"; }
+need() { command -v "$1" >/dev/null 2>&1 || { printf 'missing required command: %s\n' "$1" >&2; exit 1; }; }
+
+# These are normally added by the managed shell configuration, but bootstrap
+# executes in the caller's existing shell, before it has necessarily reloaded.
+export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/go/bin:$PATH"
+
+ensure_dotnet() {
+  command -v dotnet >/dev/null 2>&1 && return
+  need curl
+  local installer
+  installer="$(mktemp "${TMPDIR:-/tmp}/dotnet-install.XXXXXX")"
+  trap 'rm -f "$installer"' RETURN
+  log "installing the .NET 10 SDK into ~/.dotnet (no system package was available)"
+  curl --fail --location --retry 3 --silent --show-error https://dot.net/v1/dotnet-install.sh --output "$installer"
+  bash "$installer" --channel 10.0 --install-dir "$HOME/.dotnet" --no-path
+  export PATH="$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"
+}
+
+need go
+need npm
+ensure_dotnet
+need dotnet
+
+log "installing Go language tools into $(go env GOPATH)/bin"
+go install golang.org/x/tools/gopls@latest
+go install github.com/fatih/gomodifytags@latest
+go install github.com/cweill/gotests/gotests@latest
+go install github.com/x-motemen/gore/cmd/gore@latest
+
+log "installing Python and TypeScript language servers into ~/.local/bin"
+npm install --global --prefix "$HOME/.local" pyright typescript typescript-language-server
+
+log "installing C# language server into ~/.dotnet/tools"
+if dotnet tool list --global | awk 'NR > 2 { print $1 }' | grep -qx csharp-ls; then
+  dotnet tool update --global csharp-ls
+else
+  dotnet tool install --global csharp-ls
+fi
+
+cat <<'EOF'
+
+Language servers installed. If your distro did not provide jdtls, install its
+Eclipse JDT Language Server package, then run: ~/.config/emacs/bin/doom sync --env
+EOF
